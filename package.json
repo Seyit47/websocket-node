@@ -1,0 +1,19 @@
+{
+  "name": "websocket-node",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon ."
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "ws": "^8.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "nodemon": "^2.0.15",
+    "prettier": "2.5.1"
+  }
+}
