@@ -23,41 +23,13 @@ wss.on("connection", (ws) => {
         message.sender = ws.metadata.id;
         message.color = ws.metadata.color;
 
-        console.log(message)
+        const outbound = JSON.stringify(message);
 
-        if (message.type === "message") {
-            onMessage(message);
-        }
-
-        if (message.type === "offer") {
-            const outbound = JSON.stringify(message);
-
-            [...clients.keys()].forEach((client) => {
-                if (message.sender !== client.metadata.id) {
-                    client.send(outbound);
-                }
-            });
-        }
-
-        if (message.type === "answer") {
-            const outbound = JSON.stringify(message);
-
-            [...clients.keys()].forEach((client) => {
-                if (message.sender !== client.metadata.id) {
-                    client.send(outbound);
-                }
-            });
-        }
-
-        function onMessage() {
-            const outbound = JSON.stringify(message);
-
-            [...clients.keys()].forEach((client) => {
-                if (message.sender !== client.metadata.id) {
-                    client.send(outbound);
-                }
-            });
-        }
+        [...clients.keys()].forEach((client) => {
+            if (message.sender !== client.metadata.id) {
+                client.send(outbound);
+            }
+        });
     })
 
     ws.on("close", () => {
