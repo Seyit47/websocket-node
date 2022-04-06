@@ -16,6 +16,24 @@ wss.on("connection", (ws) => {
 
     clients.add(ws);
 
+    ws.send(JSON.stringify({
+        type: "metadata",
+        client: ws.metadata
+    }));
+
+    [...clients.keys()].forEach((client) => {
+        if (client.metadata.id !== ws.metadata.id) {
+            client.send(JSON.stringify({
+                type: "new-client",
+                client: ws.metadata
+            }));
+            ws.send(JSON.stringify({
+                type: "new-client",
+                client: client.metadata
+            }))
+        }
+    })
+
     ws.on("message", (messageAsString) => {
         console.log('received: %s', messageAsString);
         const message = JSON.parse(messageAsString);
@@ -26,13 +44,21 @@ wss.on("connection", (ws) => {
         const outbound = JSON.stringify(message);
 
         [...clients.keys()].forEach((client) => {
-            if (message.sender !== client.metadata.id) {
+            if (message.to.id === client.metadata.id) {
                 client.send(outbound);
             }
         });
     })
 
     ws.on("close", () => {
+        [...clients.keys()].forEach((client) => {
+            if (client.metadata.id !== ws.metadata.id) {
+                client.send(JSON.stringify({
+                    type: "client-disconnected",
+                    client: ws.metadata
+                }))
+            }
+        })
         clients.delete(ws);
     });
 });
