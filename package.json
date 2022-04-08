@@ -1,7 +1,7 @@
 {
   "name": "websocket-node",
   "version": "1.0.0",
-  "main": "src/main.js",
+  "main": "src/mesh-version.js",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon ."
