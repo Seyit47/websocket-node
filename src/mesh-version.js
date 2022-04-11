@@ -43,11 +43,25 @@ wss.on("connection", (ws) => {
 
         const outbound = JSON.stringify(message);
 
-        [...clients.keys()].forEach((client) => {
-            if (message.to.id === client.metadata.id) {
-                client.send(outbound);
-            }
-        });
+        if (message.type === "audio-toggle") {
+            [...clients.keys()].forEach((client) => {
+                if (ws.metadata.id !== client.metadata.id) {
+                    client.send(outbound);
+                }
+            });    
+        } else if(message.type === "login") {
+            ws.metadata.name = message.data.name;
+            ws.send(JSON.stringify({
+                type: "login-success",
+                data: message.data.name
+            }))
+        } else {
+            [...clients.keys()].forEach((client) => {
+                if (message.to.id === client.metadata.id) {
+                    client.send(outbound);
+                }
+            });
+        }
     })
 
     ws.on("close", () => {
